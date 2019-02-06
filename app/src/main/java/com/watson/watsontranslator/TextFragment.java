@@ -1,7 +1,6 @@
 package com.watson.watsontranslator;
 
 import android.content.DialogInterface;
-import android.content.Loader;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -22,6 +21,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import okhttp3.MediaType;
@@ -32,11 +33,14 @@ import okhttp3.ResponseBody;
 
 public class TextFragment extends Fragment {
 
+    protected static List<String> textList = new ArrayList<>();
+    protected static List<String> langList = new ArrayList<>();
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        Log.d("Size", String.valueOf(textList.size()));
 
         getActivity().setTitle("Новый текст");
 
@@ -46,13 +50,16 @@ public class TextFragment extends Fragment {
             public void onClick(final View view) {
 
                 EditText editText = view.getRootView().findViewById(R.id.etForRequest);
-                String text = String.valueOf(editText.getText());
+                final String text = String.valueOf(editText.getText());
 
                 new Task(new CallBack() {
                     @Override
                     public void onComplite(String result) {
                         View view = Objects.requireNonNull(getView()).getRootView();
                         makeDialog(view, result);
+                        textList.add(text);
+                        langList.add(result);
+                        Log.d("Size", String.valueOf(textList.size()));
                         Log.d("onComplite", "atTask");
                     }
                 }).execute(text);

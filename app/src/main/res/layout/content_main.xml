@@ -8,6 +8,15 @@
     tools:context=".MainActivity"
     tools:showIn="@layout/app_bar_main">
 
+    <TextView
+        android:id="@+id/tvWelcome"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Добро пожаловать"
+        android:textSize="50dp"/>
+
     <FrameLayout
         android:id="@+id/fragment"
         android:layout_width="match_parent"

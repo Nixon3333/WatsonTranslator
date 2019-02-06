@@ -21,6 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -44,7 +45,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        displaySelectedScreen(R.id.nav_camera);
+        //displaySelectedScreen(R.id.nav_camera);
     }
 
     @Override
@@ -86,6 +87,8 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         displaySelectedScreen(id);
+        TextView textView = findViewById(R.id.tvWelcome);
+        textView.setVisibility(View.GONE);
 
 
         return true;
@@ -112,7 +115,5 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
     }
-
-
 
 }
