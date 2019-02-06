@@ -4,19 +4,27 @@
 <LinearLayout android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/colorPrimary"
+    android:layout_margin="8sp">
 
         <TextView
+            android:layout_margin="8dp"
             android:id="@+id/tvHistoryText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Hello" />
+            android:textSize="16sp"
+            android:text="Hello"
+            android:textColor="@android:color/white"/>
 
         <TextView
+            android:layout_margin="8dp"
             android:id="@+id/tvHistoryLanguage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Hi" />
+            android:textSize="16sp"
+            android:text="Hi"
+            android:textColor="@android:color/white"/>
 
     </LinearLayout>
 
