@@ -15,9 +15,6 @@ import java.util.List;
 
 public class HistoryFragment extends Fragment {
 
-    private List<String> textList = new ArrayList<>();
-    private List<String> langList = new ArrayList<>();
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -31,8 +28,8 @@ public class HistoryFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.history_fragment, container, false);
-        textList = TextFragment.textList;
-        langList = TextFragment.langList;
+        List<String> textList = TextFragment.textList;
+        List<String> langList = TextFragment.langList;
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
 
         RecyclerAdapter adapter = new RecyclerAdapter(textList, langList);

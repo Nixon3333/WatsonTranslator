@@ -172,7 +172,6 @@ public class TextFragment extends Fragment {
         return s;
     }
 
-
     public String readJSONFromAsset() {
         String json = null;
         try {
@@ -204,5 +203,6 @@ public class TextFragment extends Fragment {
         AlertDialog alert = builder.create();
         alert.show();
     }
+
 
 }
