@@ -25,12 +25,15 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static boolean isFirst = true;
     private boolean backPressedOnce = false;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null)
+            isFirst = savedInstanceState.getBoolean("isFirst");
 
         if (getArrayList("textList") != null) {
             TextFragment.textList = getArrayList("textList");
@@ -52,11 +55,14 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //Show WelcomeFragment
-        Fragment fragment = new WelcomeFragment();
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.fragment, fragment);
-        fragmentTransaction.commit();
+        //Show WelcomeFragment if first launch
+        if (isFirst) {
+            Fragment fragment = new WelcomeFragment();
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.fragment, fragment);
+            fragmentTransaction.commit();
+            isFirst = false;
+        }
     }
 
     @Override
@@ -116,6 +122,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putBoolean("isFirst", isFirst);
         saveArrayList(TextFragment.textList, "textList");
         saveArrayList(TextFragment.langList, "langList");
         Log.d("Save", " saved");
@@ -139,11 +146,5 @@ public class MainActivity extends AppCompatActivity
         Type type = new TypeToken<List<String>>() {
         }.getType();
         return gson.fromJson(json, type);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        finish();
     }
 }

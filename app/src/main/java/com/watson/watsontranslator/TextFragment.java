@@ -97,6 +97,7 @@ public class TextFragment extends Fragment implements LoaderManager.LoaderCallba
                                     dialog.cancel();
                                     EditText editText = view.findViewById(R.id.etForRequest);
                                     editText.setText("");
+                                    IdentifyTask.result = "afterDialog";
                                 }
                             });
             AlertDialog alert = builder.create();

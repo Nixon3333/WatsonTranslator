@@ -23,7 +23,7 @@ public class IdentifyTask extends AsyncTaskLoader<String> {
 
     private final String TAG = getClass().getSimpleName();
     private String text;
-    private String result;
+    static String result;
 
     IdentifyTask(Context context, String text) {
         super(context);
@@ -33,10 +33,13 @@ public class IdentifyTask extends AsyncTaskLoader<String> {
     @Override
     protected void onStartLoading() {
         Log.d(TAG, "start");
-        if (result != null) {
-            deliverResult(result);
-        } else {
+        if (result == null) {
             forceLoad();
+        } else {
+            if (!result.equals("afterDialog")) {
+                deliverResult(result);
+                result = null;
+            }
         }
     }
 
