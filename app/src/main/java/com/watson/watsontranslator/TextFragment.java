@@ -1,12 +1,14 @@
 package com.watson.watsontranslator;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,55 +16,48 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
+public class TextFragment extends Fragment implements LoaderManager.LoaderCallbacks<String> {
 
-public class TextFragment extends Fragment {
-
+    private final String TAG = getClass().getSimpleName();
     protected static List<String> textList = new ArrayList<>();
     protected static List<String> langList = new ArrayList<>();
+
+    @SuppressLint("StaticFieldLeak")
+    protected static View view;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Log.d("Size", String.valueOf(textList.size()));
+        TextFragment.view = view;
 
-        getActivity().setTitle("Новый текст");
+        Log.d(TAG + "Size", String.valueOf(textList.size()));
 
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        Objects.requireNonNull(getActivity()).setTitle(R.string.text_fragment_title);
+
+        FloatingActionButton fab = view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
 
                 EditText editText = view.getRootView().findViewById(R.id.etForRequest);
-                final String text = String.valueOf(editText.getText());
+                String text = String.valueOf(editText.getText());
+                if(!text.trim().isEmpty()) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("text", text);
+                    textList.add(0, text);
 
-                new Task(new CallBack() {
-                    @Override
-                    public void onComplite(String result) {
-                        View view = Objects.requireNonNull(getView()).getRootView();
-                        makeDialog(view, result);
-                        textList.add(text);
-                        langList.add(result);
-                        Log.d("Size", String.valueOf(textList.size()));
-                        Log.d("onComplite", "atTask");
-                    }
-                }).execute(text);
+                    getActivity().getSupportLoaderManager().initLoader(textList.size(), bundle, TextFragment.this).forceLoad();
+                } else {
+                    Toast.makeText(getContext(), R.string.empty_edittext, Toast.LENGTH_LONG).show();
+                }
+
             }
         });
     }
@@ -75,134 +70,63 @@ public class TextFragment extends Fragment {
     }
 
 
-    public class Task extends AsyncTask<String, Void, String> {
-
-        private CallBack callback;
-        private FrameLayout progressLayout = getView().getRootView().findViewById(R.id.progressLayout);
-
-        public Task(CallBack callback) {
-            this.callback = callback;
-        }
-
-        @Override
-        protected void onPreExecute() {
-
-            progressLayout.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            final String text = params[0];
-            final String[] result = {null};
-
-            MediaType JSON = MediaType.parse("text/plain; charset=utf-8");
-
-            RequestBody body = RequestBody.create(JSON, text);
-
-            Request request = new Request.Builder()
-                    .header("Authorization", "Basic MWFmMWJiYTMtM2VjZS00ZmQ5LTg0YzItYTQwODI4MmM3Y2ZlOkJINWVhM0ZCSHBXRg==")
-                    .url("https://gateway.watsonplatform.net/language-translator/api/v3/identify?version=2018-05-01")
-                    .method("POST", body)
-                    .build();
-
-            OkHttpClient client = new OkHttpClient();
-            ResponseBody responseBody = null;
-
-            try {
-                okhttp3.Response response = client.newCall(request).execute();
-                responseBody = response.body();
-                System.out.println("MyResp : " + response);
-                String s = responseBody.string().trim();
-                System.out.println("MyRespBody : " + s);
-                result[0] = parseJsonResponse(s);
-                Log.d("result[0]", result[0]);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
-            return result[0];
-        }
-
-
-        @Override
-        protected void onPostExecute(String s) {
-            if (callback != null) callback.onComplite(s);
-            progressLayout.setVisibility(View.GONE);
-
-        }
-    }
-
-
-    private String parseJsonResponse(String string) {
-        String lang = null;
-        try {
-            JSONObject jsonObject = new JSONObject(string);
-            JSONArray jsonArray = jsonObject.getJSONArray("languages");
-            JSONObject jsonLang = jsonArray.getJSONObject(0);
-            lang = jsonLang.getString("language");
-            System.out.println("jsonObject.toString : " + jsonObject.toString());
-            System.out.println("lang : " + lang);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        //identifyLanguage(lang);
-        return identifyLanguage(lang);
-    }
-
-    private String identifyLanguage(String s) {
-        try {
-            JSONObject obj = new JSONObject(readJSONFromAsset());
-            JSONArray jsonArray = obj.getJSONArray("languages");
-            Log.d("JSON", obj.toString());
-            Log.d("JSON", jsonArray.getString(1));
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                if (jsonObject.get("language").equals(s))
-                    s = String.valueOf(jsonObject.get("name"));
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Log.d("JSONErr", e.getMessage());
-        }
-
-        return s;
-    }
-
-    public String readJSONFromAsset() {
-        String json = null;
-        try {
-            InputStream is = getContext().getAssets().open("languages.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json = new String(buffer, "UTF-8");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-        return json;
-    }
-
     protected static void makeDialog(View v, String string) {
         View view = v.getRootView();
         AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-        builder.setTitle("Язык определён")
-                .setMessage("Ваша фраза написана на " + string)
-                .setCancelable(false)
-                .setNegativeButton("Оk",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-        AlertDialog alert = builder.create();
-        alert.show();
+        if (string.equals("error")) {
+            TextFragment.textList.remove(0);
+            builder.setTitle(R.string.error_dialog_title)
+                    .setMessage("Сервер не отвечает или отсутствует интернет-соединение")
+
+                    .setCancelable(false)
+                    .setNegativeButton("Оk",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+            AlertDialog alert = builder.create();
+            alert.show();
+        } else {
+            builder.setTitle(R.string.success_identify_title)
+                    .setMessage("Ваша фраза написана на " + string)
+
+                    .setCancelable(false)
+                    .setNegativeButton("Оk",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
     }
 
 
+    @Override
+    public Loader<String> onCreateLoader(int id, Bundle args) {
+
+        FrameLayout progressLayout = Objects.requireNonNull(getView()).getRootView().findViewById(R.id.progressLayout);
+        progressLayout.setVisibility(View.VISIBLE);
+        return new MyTask(getContext(), Objects.requireNonNull(args.get("text")).toString());
+    }
+
+    @Override
+    public void onLoadFinished(Loader<String> loader, String data) {
+        if (data != null)
+            Log.d(TAG + " LoaderFinish_data : ", data);
+        FrameLayout progressLayout = Objects.requireNonNull(getView()).getRootView().findViewById(R.id.progressLayout);
+        progressLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<String> loader) {
+
+    }
+
+
+    public static void showDialog(String s) {
+        makeDialog(TextFragment.view, s);
+    }
 }

@@ -20,6 +20,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter {
             this.historyTextList = historyTextList;
             this.historyLanguageList = historyLanguageList;
         } else {
+
+            /*Case with empty history*/
             this.historyTextList.add("Вы ещё ничего не искали");
             this.historyLanguageList.add("Russian");
         }
@@ -44,19 +46,22 @@ public class RecyclerAdapter extends RecyclerView.Adapter {
         return historyTextList.size();
     }
 
-    private class RecyclerViewHolder extends RecyclerView.ViewHolder{
+    private class RecyclerViewHolder extends RecyclerView.ViewHolder {
 
         private TextView tvHistoryText, tvHistoryLanguage;
 
-        public RecyclerViewHolder(View itemView) {
+        RecyclerViewHolder(View itemView) {
             super(itemView);
+
             tvHistoryText = itemView.findViewById(R.id.tvHistoryText);
             tvHistoryLanguage = itemView.findViewById(R.id.tvHistoryLanguage);
         }
 
-        public void bindView(int position) {
+        void bindView(int position) {
+
             tvHistoryText.setText("Фраза : " + historyTextList.get(position));
             tvHistoryLanguage.setText("Язык : " + historyLanguageList.get(position));
+
         }
     }
 }

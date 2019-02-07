@@ -6,4 +6,17 @@
     <string name="nav_header_subtitle">Translator</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+
+    <!--App's strings-->
+    <string name="back_pressed_message">Нажмите \"назад\" ещё раз, чтобы выйти из приложения</string>
+    <string name="history_title">История запросов</string>
+    <string name="not_used_yet">Вы ещё ничего не искали</string>
+    <string name="not_used_language">Russian</string>
+    <string name="phrase">Фраза :</string>
+    <string name="language">Язык :</string>
+    <string name="text_fragment_title">Новый текст</string>
+    <string name="success_identify_title">Язык определён</string>
+    <string name="language_of_phrase">Ваша фраза написана на</string>
+    <string name="error_dialog_title">Произошла ошибка</string>
+    <string name="empty_edittext">Вы ничего не ввели</string>
 </resources>
