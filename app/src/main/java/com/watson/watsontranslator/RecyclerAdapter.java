@@ -15,7 +15,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter {
     private List<String> historyTextList = new ArrayList<>();
     private List<String> historyLanguageList = new ArrayList<>();
 
-    public RecyclerAdapter(List<String> historyTextList, List<String> historyLanguageList) {
+    RecyclerAdapter(List<String> historyTextList, List<String> historyLanguageList) {
         if (historyTextList.size() != 0) {
             this.historyTextList = historyTextList;
             this.historyLanguageList = historyLanguageList;
@@ -59,8 +59,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter {
 
         void bindView(int position) {
 
-            tvHistoryText.setText("Фраза : " + historyTextList.get(position));
-            tvHistoryLanguage.setText("Язык : " + historyLanguageList.get(position));
+            tvHistoryText.setText(String.format("Фраза : %s", historyTextList.get(position)));
+            tvHistoryLanguage.setText(String.format("Язык : %s", historyLanguageList.get(position)));
 
         }
     }

@@ -109,7 +109,7 @@ public class TextFragment extends Fragment implements LoaderManager.LoaderCallba
 
         FrameLayout progressLayout = Objects.requireNonNull(getView()).getRootView().findViewById(R.id.progressLayout);
         progressLayout.setVisibility(View.VISIBLE);
-        return new MyTask(getContext(), Objects.requireNonNull(args.get("text")).toString());
+        return new IdentifyTask(getContext(), Objects.requireNonNull(args.get("text")).toString());
     }
 
     @Override

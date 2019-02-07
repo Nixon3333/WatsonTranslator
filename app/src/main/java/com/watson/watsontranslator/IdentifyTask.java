@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,13 +19,13 @@ import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 
 
-public class MyTask extends AsyncTaskLoader<String> {
+public class IdentifyTask extends AsyncTaskLoader<String> {
 
     private final String TAG = getClass().getSimpleName();
     private String text;
     private String result;
 
-    MyTask(Context context, String text) {
+    IdentifyTask(Context context, String text) {
         super(context);
         this.text = text;
     }

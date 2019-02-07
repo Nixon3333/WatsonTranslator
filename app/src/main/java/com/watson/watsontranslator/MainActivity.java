@@ -1,7 +1,9 @@
 package com.watson.watsontranslator;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -10,8 +12,15 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -25,6 +34,12 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null)
             isFirst = savedInstanceState.getBoolean("isFirst");
+
+        if (getArrayList("textList") != null) {
+            TextFragment.textList = getArrayList("textList");
+            TextFragment.langList = getArrayList("langList");
+        }
+
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -109,6 +124,27 @@ public class MainActivity extends AppCompatActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean("isFirst", isFirst);
+        saveArrayList(TextFragment.textList, "textList");
+        saveArrayList(TextFragment.langList, "langList");
+        Log.d("Save", " saved");
     }
 
+    /*Saving history*/
+    public void saveArrayList(List<String> list, String key){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = prefs.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(list);
+        editor.putString(key, json);
+        editor.apply();
+    }
+
+    /*Restore history*/
+    public List<String> getArrayList(String key){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        Gson gson = new Gson();
+        String json = prefs.getString(key, null);
+        Type type = new TypeToken<List<String>>() {}.getType();
+        return gson.fromJson(json, type);
+    }
 }
