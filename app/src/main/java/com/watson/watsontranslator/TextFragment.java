@@ -57,7 +57,6 @@ public class TextFragment extends Fragment implements LoaderManager.LoaderCallba
                 } else {
                     Toast.makeText(getContext(), R.string.empty_edittext, Toast.LENGTH_LONG).show();
                 }
-
             }
         });
     }
