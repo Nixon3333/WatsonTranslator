@@ -25,15 +25,12 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static boolean isFirst = true;
     private boolean backPressedOnce = false;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null)
-            isFirst = savedInstanceState.getBoolean("isFirst");
 
         if (getArrayList("textList") != null) {
             TextFragment.textList = getArrayList("textList");
@@ -55,15 +52,11 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //Show WelcomeFragment if first launch
-        if(isFirst){
-            Fragment fragment = new WelcomeFragment();
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.fragment, fragment);
-            fragmentTransaction.commit();
-            isFirst = false;
-        }
-
+        //Show WelcomeFragment
+        Fragment fragment = new WelcomeFragment();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.fragment, fragment);
+        fragmentTransaction.commit();
     }
 
     @Override
@@ -83,7 +76,7 @@ public class MainActivity extends AppCompatActivity
 
                 @Override
                 public void run() {
-                    backPressedOnce=false;
+                    backPressedOnce = false;
                 }
             }, 2000);
         }
@@ -123,14 +116,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean("isFirst", isFirst);
         saveArrayList(TextFragment.textList, "textList");
         saveArrayList(TextFragment.langList, "langList");
         Log.d("Save", " saved");
     }
 
     /*Saving history*/
-    public void saveArrayList(List<String> list, String key){
+    public void saveArrayList(List<String> list, String key) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = prefs.edit();
         Gson gson = new Gson();
@@ -140,11 +132,18 @@ public class MainActivity extends AppCompatActivity
     }
 
     /*Restore history*/
-    public List<String> getArrayList(String key){
+    public List<String> getArrayList(String key) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         Gson gson = new Gson();
         String json = prefs.getString(key, null);
-        Type type = new TypeToken<List<String>>() {}.getType();
+        Type type = new TypeToken<List<String>>() {
+        }.getType();
         return gson.fromJson(json, type);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        finish();
     }
 }

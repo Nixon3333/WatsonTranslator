@@ -48,7 +48,7 @@ public class TextFragment extends Fragment implements LoaderManager.LoaderCallba
 
                 EditText editText = view.getRootView().findViewById(R.id.etForRequest);
                 String text = String.valueOf(editText.getText());
-                if(!text.trim().isEmpty()) {
+                if (!text.trim().isEmpty()) {
                     Bundle bundle = new Bundle();
                     bundle.putString("text", text);
                     textList.add(0, text);
@@ -69,8 +69,8 @@ public class TextFragment extends Fragment implements LoaderManager.LoaderCallba
     }
 
 
-    protected static void makeDialog(View v, String string) {
-        View view = v.getRootView();
+    protected static void makeDialog(final View v, String string) {
+        final View view = v.getRootView();
         AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
         if (string.equals("error")) {
             TextFragment.textList.remove(0);
@@ -95,6 +95,8 @@ public class TextFragment extends Fragment implements LoaderManager.LoaderCallba
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     dialog.cancel();
+                                    EditText editText = view.findViewById(R.id.etForRequest);
+                                    editText.setText("");
                                 }
                             });
             AlertDialog alert = builder.create();
