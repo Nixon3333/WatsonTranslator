@@ -62,6 +62,11 @@ public class MainActivity extends AppCompatActivity
             fragmentTransaction.replace(R.id.fragment, fragment);
             fragmentTransaction.commit();
             isFirst = false;
+        } else {
+            Fragment fragment = new TextFragment();
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.fragment, fragment);
+            fragmentTransaction.commit();
         }
     }
 

@@ -127,7 +127,6 @@ public class TextFragment extends Fragment implements LoaderManager.LoaderCallba
 
     }
 
-
     public static void showDialog(String s) {
         makeDialog(TextFragment.view, s);
     }
